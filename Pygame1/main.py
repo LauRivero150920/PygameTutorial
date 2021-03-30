@@ -1,15 +1,18 @@
 import pygame
 import os
-<<<<<<< refs/remotes/origin/main
 import sys
 from random import randint
+from pygame.locals import*
+pygame.init()
+pygame.font.init()
+
 # Creación de ventana de juego
 WIDTH, HEIGHT = 600, 300
-=======
+
 from random import randint
 # Creación de ventana de juego
 WIDTH, HEIGHT = 500, 300
->>>>>>> Pygame1 7.Random
+
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hello World")
 
@@ -44,16 +47,13 @@ WHITE = pygame.Color(255,255,255)
 #print(BLUE2.b)
 
 """ Cargar imagenes """
-<<<<<<< refs/remotes/origin/main
 #IMAGE1 = pygame.image.load(os.path.join('Images', 'red_panda.png'))
-=======
+
 IMAGE1 = pygame.image.load(os.path.join('Images', 'red_panda.png'))
->>>>>>> Pygame1 7.Random
 
 # Imagen en posición random
 IMAGE1_x, IMAGE1_y = randint(10,300), randint(10,200)
 # blit: imagen, tupla (posx, posy)
-<<<<<<< refs/remotes/origin/main
 #WIN.blit(IMAGE1,(IMAGE1_x,IMAGE1_y))
 
 """ Movimiento de imagenes """
@@ -63,15 +63,27 @@ RIGHT = True
 """ Colisiones de rectangulos """
 RECT1 = pygame.Rect(0,0,100,50)
 RECT2 = pygame.Rect(200,200,100,50)
-=======
+
 WIN.blit(IMAGE1,(IMAGE1_x,IMAGE1_y))
 
+""" Fuentes/Texto """
+FONT1 = pygame.font.Font(None,30)
+#TEXT1 = FONT1.render("Prueba Fuente", 0, BLUE1)
 
->>>>>>> Pygame1 7.Random
+#FONT2 = pygame.font.SysFont("Avenir",30)
+#TEXT2 = FONT2.render("Prueba Fuente Sistema", 0, BLUE1)
+
+AUX = 1
+
 while True:
 	WIN.fill(WHITE)
 
 	#WIN.blit(IMAGE1,(IMAGE1_x,IMAGE1_y))
+
+	TIME1 = pygame.time.get_ticks()/1000
+	if AUX == TIME1:
+		AUX += 1
+		print(TIME1) 
 
 	pygame.draw.rect(WIN, BLUE1, RECT1)
 	pygame.draw.rect(WIN, BLUE2, RECT2)
@@ -79,9 +91,12 @@ while True:
 	# left -> coordenada en x, top -> corrdenada en y, mueve con mouse
 	RECT1.left, RECT1.top = pygame.mouse.get_pos()
 
+	#WIN.blit(TEXT1,(100,100))
+	#WIN.blit(TEXT2,(200,200))
+
 	if RECT1.colliderect(RECT2):
 		VEL = 0
-		print("Colision")
+		#print("Colision")
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -114,4 +129,6 @@ while True:
 			RECT2.left = IMAGE1_x
 		else:
 			RIGHT = True
+	TEXTCLOCK = FONT1.render("Time: " + str(TIME1), 0, BLUE2)
+	WIN.blit(TEXTCLOCK, (200,100))
 	pygame.display.update()
