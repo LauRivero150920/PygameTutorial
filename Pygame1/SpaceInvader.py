@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+from random import randint
 from pygame.locals import*
 
 WIDTH, HEIGHT = 900, 480
@@ -36,7 +37,7 @@ class SpaceShip(pygame.sprite.Sprite):
 				self.RECT.left = 840
 
 	def Shoot(self, x, y):
-		MY_BULLET = Bullet(x,y)
+		MY_BULLET = Bullet(x,y,"Images/disparoa.jpg",True)
 		self.SHOOTLIST.append(MY_BULLET)
 
 	def Draw(self, WIN):
@@ -44,7 +45,7 @@ class SpaceShip(pygame.sprite.Sprite):
 
 # Clase para disparar
 class Bullet(pygame.sprite.Sprite):
-	def __init__(self, posx, posy):
+	def __init__(self, posx, posy, route, character):
 		pygame.sprite.Sprite.__init__(self)
 		self.IMAGEBULLET = pygame.image.load(os.path.join('Images', 'disparoa.jpg'))
 		self.RECT = self.IMAGEBULLET.get_rect()
@@ -54,8 +55,12 @@ class Bullet(pygame.sprite.Sprite):
 		self.RECT.left = posx
 		self.RECT.top = posy
 
+		self.CHARSHOOT = character
 	def Trayectory(self):
-		self.RECT.top = self.RECT.top - self.BULLSPEED
+		if self.CHARSHOOT == True:
+			self.RECT.top = self.RECT.top - self.BULLSPEED
+		else:
+			self.RECT.top = self.RECT.top + self.BULLSPEED
 
 	def Draw(self, surface):
 		surface.blit(self.IMAGEBULLET, self.RECT)
@@ -72,13 +77,14 @@ class Invader(pygame.sprite.Sprite):
 		self.IMAGEINVADER = self.IMAGELIST[self.POSIMAGES]
 		self.RECT = self.IMAGEINVADER.get_rect()
 
-		self.BULLSPEED = 5
 		self.VEL = 20
 
-		self.BULLETLIST = []
+		self.SHOOTLIST = []
 
 		self.RECT.left = posx
 		self.RECT.top = posy
+
+		self.SHOOTRANGE = 5
 
 		self.TIMECHANGE = 1 
 
@@ -87,12 +93,21 @@ class Invader(pygame.sprite.Sprite):
 		surface.blit(self.IMAGEINVADER, self.RECT)
 
 	def Behavior(self,time):
+		self.__Attack()
 		if self.TIMECHANGE == time:
 			self.POSIMAGES += 1
 			self.TIMECHANGE += 1
 
 			if self.POSIMAGES > len(self.IMAGELIST) - 1:
 				self.POSIMAGES = 0
+	def __Attack(self):
+		if (randint(0,100) < self.SHOOTRANGE):
+			self.__Shoot()
+
+	def __Shoot(self):
+		x,y = self.RECT.center
+		MY_BULLET = Bullet(x,y,"Images/disparob.jpg",False)
+		self.SHOOTLIST.append(MY_BULLET)
 
 def SpaceInvader():
 	pygame.init()
@@ -104,7 +119,7 @@ def SpaceInvader():
 	ENEMY = Invader(100,100)
 
 	IN_GAME = True
-	DEMO_BULLET = Bullet(WIDTH/2, HEIGHT - 30) 
+	#DEMO_BULLET = Bullet(WIDTH/2, HEIGHT - 30) 
 
 	CLOCK = pygame.time.Clock()
 	while True:
@@ -112,9 +127,9 @@ def SpaceInvader():
 
 		CLOCK.tick(60)
 
-		DEMO_BULLET.Trayectory()
+		#DEMO_BULLET.Trayectory()
 
-		TIME = pygame.time.get_ticks()/1000
+		TIME = int(pygame.time.get_ticks()/1000)
 
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -143,6 +158,13 @@ def SpaceInvader():
 				x.Trayectory()
 				if x.RECT.top < -10:
 					PLAYER.SHOOTLIST.remove(x)
+
+		if len(ENEMY.SHOOTLIST) > 0:
+			for x in ENEMY.SHOOTLIST:
+				x.Draw(WIN)
+				x.Trayectory()
+				if x.RECT.top > 900:
+					ENEMY.SHOOTLIST.remove(x)
 
 		pygame.display.update()
 
