@@ -85,14 +85,18 @@ class Invader(pygame.sprite.Sprite):
 		self.RECT.top = posy
 
 		self.SHOOTRANGE = 5
-
 		self.TIMECHANGE = 1 
+
+		self.RIGHT = True
+		self.CONT = 0
+		self.MAXDOWN = self.RECT.top + 40
 
 	def Draw(self, surface):
 		self.IMAGEINVADER = self.IMAGELIST[self.POSIMAGES]
 		surface.blit(self.IMAGEINVADER, self.RECT)
 
 	def Behavior(self,time):
+		self.__Movement()
 		self.__Attack()
 		if self.TIMECHANGE == time:
 			self.POSIMAGES += 1
@@ -100,6 +104,30 @@ class Invader(pygame.sprite.Sprite):
 
 			if self.POSIMAGES > len(self.IMAGELIST) - 1:
 				self.POSIMAGES = 0
+	def __Movement(self):
+		if self.CONT < 3:
+			self.__LateralMovement()
+		else:
+			self.__Down()
+
+	def __LateralMovement(self):
+		if self.RIGHT == True:
+			self.RECT.left = self.RECT.left + self.VEL
+			if self.RECT.left > 500:
+				self.RIGHT = False
+				self.CONT += 1
+		else:
+			self.RECT.left = self.RECT.left - self.VEL
+			if self.RECT.left < 0:
+				self.RIGHT = True
+
+	def __Down(self):
+ 		if self.MAXDOWN == self.RECT.top:
+ 			self.CONT = 0
+ 			self.MAXDOWN = self.RECT.top + 40
+ 		else:
+ 			self.RECT.top += 1
+
 	def __Attack(self):
 		if (randint(0,100) < self.SHOOTRANGE):
 			self.__Shoot()
