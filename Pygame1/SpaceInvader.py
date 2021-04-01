@@ -21,6 +21,9 @@ class SpaceShip(pygame.sprite.Sprite):
 
 		self.VEL = 20
 
+		self.SOUND_SHOOT = pygame.mixer.Sound("Sounds/shoot.wav")
+
+
 	def MovementRight(self):
 		self.RECT.right += self.VEL
 		self.__movement()
@@ -39,6 +42,7 @@ class SpaceShip(pygame.sprite.Sprite):
 	def Shoot(self, x, y):
 		MY_BULLET = Bullet(x,y,"Images/disparoa.jpg",True)
 		self.SHOOTLIST.append(MY_BULLET)
+		self.SOUND_SHOOT.play()
 
 	def Draw(self, WIN):
 		WIN.blit(self.SPSHIMAGE, self.RECT)
@@ -143,6 +147,10 @@ def SpaceInvader():
 	pygame.display.set_caption("Space Invader")
 
 	BACKGROUND = pygame.image.load(os.path.join('Images', 'Fondo.png'))
+
+	pygame.mixer.music.load('Sounds/Intro.mp3')
+	pygame.mixer.music.play(3)
+
 	PLAYER = SpaceShip()
 	ENEMY = Invader(100,100)
 
