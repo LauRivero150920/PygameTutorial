@@ -5,6 +5,7 @@ from random import randint
 from pygame.locals import*
 
 WIDTH, HEIGHT = 900, 480
+ENEMY_LIST = []
 
 # Clase para las naves 
 class SpaceShip(pygame.sprite.Sprite):
@@ -71,10 +72,12 @@ class Bullet(pygame.sprite.Sprite):
 
 # Clase para invasor
 class Invader(pygame.sprite.Sprite):
-	def __init__(self, posx, posy):
+	def __init__(self, posx, posy, distance, image1, image2):
+		
 		pygame.sprite.Sprite.__init__(self)
-		self.INVADERIMAGE_A = pygame.image.load(os.path.join('Images', 'MarcianoA.jpg'))
-		self.INVADERIMAGE_B = pygame.image.load(os.path.join('Images', 'MarcianoB.jpg'))
+		
+		self.INVADERIMAGE_A = pygame.image.load(image1)
+		self.INVADERIMAGE_B = pygame.image.load(image2)
 		self.IMAGELIST = [self.INVADERIMAGE_A, self.INVADERIMAGE_B]
 		self.POSIMAGES = 0
 
@@ -94,6 +97,9 @@ class Invader(pygame.sprite.Sprite):
 		self.RIGHT = True
 		self.CONT = 0
 		self.MAXDOWN = self.RECT.top + 40
+
+		self.LIM_RIGHT = posx + distance
+		self.LIM_LEFT = posx + distance
 
 	def Draw(self, surface):
 		self.IMAGEINVADER = self.IMAGELIST[self.POSIMAGES]
@@ -117,12 +123,14 @@ class Invader(pygame.sprite.Sprite):
 	def __LateralMovement(self):
 		if self.RIGHT == True:
 			self.RECT.left = self.RECT.left + self.VEL
-			if self.RECT.left > 500:
+			if self.RECT.left > self.LIM_RIGHT:
 				self.RIGHT = False
+
 				self.CONT += 1
+
 		else:
 			self.RECT.left = self.RECT.left - self.VEL
-			if self.RECT.left < 0:
+			if self.RECT.left < self.LIM_LEFT:
 				self.RIGHT = True
 
 	def __Down(self):
@@ -141,6 +149,10 @@ class Invader(pygame.sprite.Sprite):
 		MY_BULLET = Bullet(x,y,"Images/disparob.jpg",False)
 		self.SHOOTLIST.append(MY_BULLET)
 
+def Load_Enemies():
+	ENEMY = Invader(100, 100, 40,'Images/MarcianoA.jpg', 'Images/MarcianoB.jpg')
+	ENEMY_LIST.append(ENEMY)
+	
 def SpaceInvader():
 	pygame.init()
 	WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -152,7 +164,7 @@ def SpaceInvader():
 	pygame.mixer.music.play(3)
 
 	PLAYER = SpaceShip()
-	ENEMY = Invader(100,100)
+	Load_Enemies()
 
 	IN_GAME = True
 	#DEMO_BULLET = Bullet(WIDTH/2, HEIGHT - 30) 
@@ -183,10 +195,7 @@ def SpaceInvader():
 
 		WIN.blit(BACKGROUND, (0,0))
 
-		ENEMY.Behavior(TIME)
-
 		PLAYER.Draw(WIN)
-		ENEMY.Draw(WIN)
 
 		if len(PLAYER.SHOOTLIST) > 0:
 			for x in PLAYER.SHOOTLIST:
@@ -195,12 +204,17 @@ def SpaceInvader():
 				if x.RECT.top < -10:
 					PLAYER.SHOOTLIST.remove(x)
 
-		if len(ENEMY.SHOOTLIST) > 0:
-			for x in ENEMY.SHOOTLIST:
-				x.Draw(WIN)
-				x.Trayectory()
-				if x.RECT.top > 900:
-					ENEMY.SHOOTLIST.remove(x)
+		if len(ENEMY_LIST) > 0:
+			for ENEMY in ENEMY_LIST:
+				ENEMY.Behavior(TIME)
+				ENEMY.Draw(WIN)
+
+				if len(ENEMY.SHOOTLIST) > 0:
+					for x in ENEMY.SHOOTLIST:
+						x.Draw(WIN)
+						x.Trayectory()
+						if x.RECT.top > 900:
+							ENEMY.SHOOTLIST.remove(x)
 
 		pygame.display.update()
 
