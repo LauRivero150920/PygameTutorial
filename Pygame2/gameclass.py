@@ -38,14 +38,15 @@ class Player(pygame.sprite.Sprite):
 
 class Game(object):
 	def __init__(self):
+		self.GAME_OVER = False
 		self.SCORE = 0
 		self.METEOR_LIST = pygame.sprite.Group()
 		self.ALL_SPRITE_LIST = pygame.sprite.Group()
 
 		for i in range(50):
 			METEOR = Meteorite()
-			METEOR.rect.x = random.randrange(900)
-			METEOR.rect.y = random.randrange(600)
+			METEOR.rect.x = random.randrange(WIDTH)
+			METEOR.rect.y = random.randrange(HEIGHT)
 			
 			self.METEOR_LIST.add(METEOR)
 			self.ALL_SPRITE_LIST.add(METEOR)
@@ -57,18 +58,32 @@ class Game(object):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return True 
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				if self.GAME_OVER:
+					self.__init__()
 		return False
 	
 	def run_logic(self):
-		self.ALL_SPRITE_LIST.update()
-		METEOR_HIT_LIST = pygame.sprite.spritecollide(self.PLAYER, self.METEOR_LIST, True)
-		for METEOR in METEOR_HIT_LIST:
-			self.SCORE += 1
-			print(self.SCORE)
+		if not self.GAME_OVER:
+			self.ALL_SPRITE_LIST.update()
+			METEOR_HIT_LIST = pygame.sprite.spritecollide(self.PLAYER, self.METEOR_LIST, True)
+			for METEOR in METEOR_HIT_LIST:
+				self.SCORE += 1
+				print(self.SCORE)
+			if len(self.METEOR_LIST) == 0:
+				self.GAME_OVER = True
 
 	def display_frame(self, screen):
 		screen.fill(WHITE)
-		self.ALL_SPRITE_LIST.draw(screen)
+		if self.GAME_OVER:
+			FONT = pygame.font.SysFont("Arial", 25)
+			TEXT = FONT.render("Game Over, Click to Continue", True, BLACK)
+			CENTER_x = (WIDTH // 2) - (TEXT.get_width() // 2)
+			CENTER_y = (HEIGHT // 2) - (TEXT.get_height() // 2)
+			screen.blit(TEXT, [CENTER_x, CENTER_y])
+
+		if not self.GAME_OVER:
+			self.ALL_SPRITE_LIST.draw(screen)
 		pygame.display.flip()
 
 def main():
