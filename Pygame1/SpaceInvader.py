@@ -3,155 +3,38 @@ import os
 import sys
 from random import randint
 from pygame.locals import*
+from Clases import SpaceShip
+from Clases import Invader
+
 
 WIDTH, HEIGHT = 900, 480
 ENEMY_LIST = []
 
-# Clase para las naves 
-class SpaceShip(pygame.sprite.Sprite):
-	def __init__(self):
-		pygame.sprite.Sprite.__init__(self)
-		self.SPSHIMAGE = pygame.image.load(os.path.join('Images', 'nave.jpg'))
-
-		self.RECT = self.SPSHIMAGE.get_rect()
-		self.RECT.centerx = WIDTH/2
-		self.RECT.centery = HEIGHT - 30
-
-		self.SHOOTLIST = []
-		self.HEALTH = True 
-
-		self.VEL = 20
-
-		self.SOUND_SHOOT = pygame.mixer.Sound("Sounds/shoot.wav")
-
-
-	def MovementRight(self):
-		self.RECT.right += self.VEL
-		self.__movement()
-
-	def MovementLeft(self):
-		self.RECT.left -= self.VEL
-		self.__movement()
-
-	def __movement(self):
-		if self.HEALTH == True:
-			if self.RECT.left <= 0:
-				self.RECT.left = 0
-			elif self.RECT.left > 870:
-				self.RECT.left = 840
-
-	def Shoot(self, x, y):
-		MY_BULLET = Bullet(x,y,"Images/disparoa.jpg",True)
-		self.SHOOTLIST.append(MY_BULLET)
-		self.SOUND_SHOOT.play()
-
-	def Draw(self, WIN):
-		WIN.blit(self.SPSHIMAGE, self.RECT)
-
-# Clase para disparar
-class Bullet(pygame.sprite.Sprite):
-	def __init__(self, posx, posy, route, character):
-		pygame.sprite.Sprite.__init__(self)
-		self.IMAGEBULLET = pygame.image.load(os.path.join('Images', 'disparoa.jpg'))
-		self.RECT = self.IMAGEBULLET.get_rect()
-
-		self.BULLSPEED = 5
-
-		self.RECT.left = posx
-		self.RECT.top = posy
-
-		self.CHARSHOOT = character
-	def Trayectory(self):
-		if self.CHARSHOOT == True:
-			self.RECT.top = self.RECT.top - self.BULLSPEED
-		else:
-			self.RECT.top = self.RECT.top + self.BULLSPEED
-
-	def Draw(self, surface):
-		surface.blit(self.IMAGEBULLET, self.RECT)
-
-# Clase para invasor
-class Invader(pygame.sprite.Sprite):
-	def __init__(self, posx, posy, distance, image1, image2):
-		
-		pygame.sprite.Sprite.__init__(self)
-		
-		self.INVADERIMAGE_A = pygame.image.load(image1)
-		self.INVADERIMAGE_B = pygame.image.load(image2)
-		self.IMAGELIST = [self.INVADERIMAGE_A, self.INVADERIMAGE_B]
-		self.POSIMAGES = 0
-
-		self.IMAGEINVADER = self.IMAGELIST[self.POSIMAGES]
-		self.RECT = self.IMAGEINVADER.get_rect()
-
-		self.VEL = 20
-
-		self.SHOOTLIST = []
-
-		self.RECT.left = posx
-		self.RECT.top = posy
-
-		self.SHOOTRANGE = 5
-		self.TIMECHANGE = 1 
-
-		self.RIGHT = True
-		self.CONT = 0
-		self.MAXDOWN = self.RECT.top + 40
-
-		self.LIM_RIGHT = posx + distance
-		self.LIM_LEFT = posx + distance
-
-	def Draw(self, surface):
-		self.IMAGEINVADER = self.IMAGELIST[self.POSIMAGES]
-		surface.blit(self.IMAGEINVADER, self.RECT)
-
-	def Behavior(self,time):
-		self.__Movement()
-		self.__Attack()
-		if self.TIMECHANGE == time:
-			self.POSIMAGES += 1
-			self.TIMECHANGE += 1
-
-			if self.POSIMAGES > len(self.IMAGELIST) - 1:
-				self.POSIMAGES = 0
-	def __Movement(self):
-		if self.CONT < 3:
-			self.__LateralMovement()
-		else:
-			self.__Down()
-
-	def __LateralMovement(self):
-		if self.RIGHT == True:
-			self.RECT.left = self.RECT.left + self.VEL
-			if self.RECT.left > self.LIM_RIGHT:
-				self.RIGHT = False
-
-				self.CONT += 1
-
-		else:
-			self.RECT.left = self.RECT.left - self.VEL
-			if self.RECT.left < self.LIM_LEFT:
-				self.RIGHT = True
-
-	def __Down(self):
- 		if self.MAXDOWN == self.RECT.top:
- 			self.CONT = 0
- 			self.MAXDOWN = self.RECT.top + 40
- 		else:
- 			self.RECT.top += 1
-
-	def __Attack(self):
-		if (randint(0,100) < self.SHOOTRANGE):
-			self.__Shoot()
-
-	def __Shoot(self):
-		x,y = self.RECT.center
-		MY_BULLET = Bullet(x,y,"Images/disparob.jpg",False)
-		self.SHOOTLIST.append(MY_BULLET)
+def Stop_Everything():
+	for ENEMY in ENEMY_LIST:
+		for MY_BULLET in ENEMY.SHOOTLIST:
+			ENEMY.SHOOTLIST.remove(MY_BULLET)
+		ENEMY.CONQUEST = True
 
 def Load_Enemies():
-	ENEMY = Invader(100, 100, 40,'Images/MarcianoA.jpg', 'Images/MarcianoB.jpg')
-	ENEMY_LIST.append(ENEMY)
+	posx = 100
+	for x in range (1, 5):
+		ENEMY = Invader.Invader(posx, 100, 40,'Images/MarcianoA.jpg', 'Images/MarcianoB.jpg')
+
+		ENEMY_LIST.append(ENEMY)
+		posx = posx + 200
+
+	posx = 100
+	for x in range (1, 5):
+		ENEMY = Invader.Invader(posx, 0, 40,'Images/Marciano2A.jpg', 'Images/Marciano2B.jpg')
+		ENEMY_LIST.append(ENEMY)
+		posx = posx + 200
+
+	posx = 100
+	for x in range (1, 5):
+		ENEMY = Invader.Invader(posx, -100, 40,'Images/Marciano3A.jpg', 'Images/Marciano3B.jpg')
+		ENEMY_LIST.append(ENEMY)
+		posx = posx + 200
 	
 def SpaceInvader():
 	pygame.init()
@@ -160,10 +43,13 @@ def SpaceInvader():
 
 	BACKGROUND = pygame.image.load(os.path.join('Images', 'Fondo.png'))
 
-	pygame.mixer.music.load('Sounds/Intro.mp3')
+	pygame.mixer.music.load('Sounds/intro.mp3')
 	pygame.mixer.music.play(3)
 
-	PLAYER = SpaceShip()
+	FONT1 = pygame.font.SysFont("Arial", 30)
+	TEXT1 = FONT1.render("GAME OVER", 0, (120,100,40))
+
+	PLAYER = SpaceShip.SpaceShip(WIDTH, HEIGHT)
 	Load_Enemies()
 
 	IN_GAME = True
@@ -203,18 +89,44 @@ def SpaceInvader():
 				x.Trayectory()
 				if x.RECT.top < -10:
 					PLAYER.SHOOTLIST.remove(x)
+				else:
+					for ENEMY in ENEMY_LIST:
+						if x.RECT.colliderect(ENEMY.RECT):
+							ENEMY_LIST.remove(ENEMY)
+							PLAYER.SHOOTLIST.remove(x)
 
 		if len(ENEMY_LIST) > 0:
 			for ENEMY in ENEMY_LIST:
 				ENEMY.Behavior(TIME)
 				ENEMY.Draw(WIN)
 
+				if ENEMY.RECT.colliderect(PLAYER.RECT):
+					player.Destruction()
+					IN_GAME == False
+					Stop_Everything()
+
 				if len(ENEMY.SHOOTLIST) > 0:
 					for x in ENEMY.SHOOTLIST:
 						x.Draw(WIN)
 						x.Trayectory()
+
+						if x.RECT.colliderect(PLAYER.RECT):
+							PLAYER.Destruction()
+							IN_GAME == False
+							Stop_Everything()
+
 						if x.RECT.top > 900:
 							ENEMY.SHOOTLIST.remove(x)
+						else:
+							for MY_BULLET in PLAYER.SHOOTLIST:
+								if x.RECT.colliderect(MY_BULLET.RECT):
+									PLAYER.SHOOTLIST.remove(MY_BULLET)
+									ENEMY.SHOOTLIST.remove(x)
+
+
+		if IN_GAME == False:
+			pygame.mixer.music.fadeout(3000)
+			WIN.blit(TEXT1,(300,300))
 
 		pygame.display.update()
 
