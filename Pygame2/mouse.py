@@ -27,7 +27,7 @@ while True:
 	y = MOUSE_POS[1]
 	WIN.fill(WHITE)
 
-	pygame.draw.rect(WIN, RED, (x, y, 100, 100))
+	#pygame.draw.rect(WIN, RED, (x, y, 100, 100))
 
 	# Actualizar pantalla
 	pygame.display.flip()
