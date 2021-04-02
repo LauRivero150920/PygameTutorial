@@ -32,11 +32,15 @@ class Player(pygame.sprite.Sprite):
 		self.image.set_colorkey(BLACK)
 		# Posicionar Sprite
 		self.rect = self.image.get_rect()
+		self.speed_x = 0
+		self.speed_y = 0
+
+	def change_speed(self,x):
+	 	self.speed_x += x
 
 	def update(self):
-		MOUSE_POS = pygame.mouse.get_pos()
-		PLAYER.rect.x = MOUSE_POS[0]
-		PLAYER.rect.y = 510
+		self.rect.x += self.speed_x
+		PLAYER.rect.y = 520
 
 
 class Laser(pygame.sprite.Sprite):
@@ -79,12 +83,24 @@ while not DONE:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			DONE = True
-		if event.type == pygame.MOUSEBUTTONDOWN:
-			LASER = Laser()
-			LASER.rect.x = PLAYER.rect.x + 45
-			LASER.rect.y = PLAYER.rect.y - 20
-			LASER_LIST.add(LASER)
-			ALL_SPRITE_LIST.add(LASER)
+		
+		if event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_LEFT:
+				PLAYER.change_speed(-3)
+			if event.key == pygame.K_RIGHT:
+				PLAYER.change_speed(3)
+			if event.key == pygame.K_SPACE:
+				LASER = Laser()
+				LASER.rect.x = PLAYER.rect.x + 45
+				LASER.rect.y = PLAYER.rect.y - 20
+				LASER_LIST.add(LASER)
+				ALL_SPRITE_LIST.add(LASER)
+
+		if event.type == pygame.KEYUP:
+			if event.key == pygame.K_LEFT:
+				PLAYER.change_speed(3)
+			if event.key == pygame.K_RIGHT:
+				PLAYER.change_speed(-3)
 
 	ALL_SPRITE_LIST.update()
 
