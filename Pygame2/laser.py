@@ -79,6 +79,8 @@ for i in range(50):
 PLAYER = Player()
 ALL_SPRITE_LIST.add(PLAYER)
 
+# Sonido
+SOUND = pygame.mixer.Sound("Sounds/laser.wav")
 while not DONE:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -95,6 +97,7 @@ while not DONE:
 				LASER.rect.y = PLAYER.rect.y - 20
 				LASER_LIST.add(LASER)
 				ALL_SPRITE_LIST.add(LASER)
+				SOUND.play()
 
 		if event.type == pygame.KEYUP:
 			if event.key == pygame.K_LEFT:
