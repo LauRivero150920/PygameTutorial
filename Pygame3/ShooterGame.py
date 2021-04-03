@@ -15,6 +15,13 @@ pygame.display.set_caption("ShooterGame!")
 
 CLOCK = pygame.time.Clock()
 
+def Draw_Text(surface, text, size, x, y):
+	FONT = pygame.font.SysFont("Berlin Sans FB", size)
+	text_surface = FONT.render("Score: " + text, True, WHITE)
+	text_rect = text_surface.get_rect()
+	text_rect.midtop = (x ,y)
+	surface.blit(text_surface, text_rect)
+
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
@@ -96,6 +103,7 @@ for i in range(8):
 
 RUNNING = True
 
+SCORE = 0
 while RUNNING:
 	CLOCK.tick(60)
 	for event in pygame.event.get():
@@ -109,9 +117,11 @@ while RUNNING:
 	# Checar colisiones meteoro - laser
 	HITS = pygame.sprite.groupcollide(METEOR_LIST, BULLETS, True, True)
 	for HIT in HITS:
+		SCORE += 10
 		METEOR = Meteor()
 		ALL_SPRITES.add(METEOR)
 		METEOR_LIST.add(METEOR)
+
 	# Checar colisiones jugador - meteoro
 	HITS = pygame.sprite.spritecollide(PLAYER, METEOR_LIST, True)
 	if HITS:
@@ -120,6 +130,9 @@ while RUNNING:
 	WIN.blit(BACK, [0,0])
 
 	ALL_SPRITES.draw(WIN)
+
+	# Marcador
+	Draw_Text(WIN, str(SCORE), 25, WIDTH // 2, 10)
 
 	pygame.display.flip()
 
