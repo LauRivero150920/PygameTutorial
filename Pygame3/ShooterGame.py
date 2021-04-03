@@ -6,6 +6,7 @@ HEIGHT = 600
 # Colores
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+GREEN = (84, 255, 130)
 
 pygame.init()
 pygame.mixer.init()
@@ -22,6 +23,15 @@ def Draw_Text(surface, text, size, x, y):
 	text_rect.midtop = (x ,y)
 	surface.blit(text_surface, text_rect)
 
+def Draw_Shield_Bar(surface, x, y, percentage):
+	BAR_LENGTH = 200
+	BAR_HEIGHT = 20
+	FILL = (percentage / 100) * BAR_LENGTH
+	BORDER = pygame.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
+	FILL = pygame.Rect(x, y, FILL, BAR_HEIGHT)
+	pygame.draw.rect(surface, GREEN, FILL)
+	pygame.draw.rect(surface, WHITE, BORDER, 2)
+
 class Player(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
@@ -31,6 +41,7 @@ class Player(pygame.sprite.Sprite):
 		self.rect.centerx = WIDTH // 2;
 		self.rect.bottom = HEIGHT - 10
 		self.speed_x = 0
+		self.shield = 100
 
 	def update(self):
 		self.speed_x = 0
@@ -146,8 +157,13 @@ while RUNNING:
 
 	# Checar colisiones jugador - meteoro
 	HITS = pygame.sprite.spritecollide(PLAYER, METEOR_LIST, True)
-	if HITS:
-		RUNNING = False
+	for HIT in HITS:
+		PLAYER.shield -= 25
+		METEOR = Meteor()
+		ALL_SPRITES.add(METEOR)
+		METEOR_LIST.add(METEOR)
+		if(PLAYER.shield <= 0):
+			RUNNING = False
 
 	WIN.blit(BACK, [0,0])
 
@@ -155,6 +171,10 @@ while RUNNING:
 
 	# Marcador
 	Draw_Text(WIN, str(SCORE), 25, WIDTH // 2, 10)
+	Draw_Text(WIN, "Health: ", 20, 15, 10)
+
+	# Barra de Salud
+	Draw_Shield_Bar(WIN, 10, 35, PLAYER.shield) 
 
 	pygame.display.flip()
 
