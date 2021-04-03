@@ -98,6 +98,29 @@ class Bullet(pygame.sprite.Sprite):
 		if self.rect.bottom < 0:
 			self.kill()
 
+class Explosion(pygame.sprite.Sprite):
+	def __init__(self, center):
+		super().__init__()
+		self.image = EXPLOSION_ANIM[0]
+		self.rect = self.image.get_rect()
+		self.rect.center = center
+		self.frame = 0 # Recorre el arreglo de imagenes
+		self.last_update = pygame.time.get_ticks() # Tiempo transcurrido del inicio
+		self.frame_rate = 50 # Velocidad de la explosión
+
+	def update(self):
+		NOW = pygame.time.get_ticks() # Tiempo cuando quiero crear explosión
+		if NOW - self.last_update > self.frame_rate:
+			self.last_update = NOW
+			self.frame += 1
+			if self.frame == len(EXPLOSION_ANIM): # Si llegue al final de la lista elimina sprites
+				self.kill()
+			else:
+				center = self.rect.center
+				self.image = EXPLOSION_ANIM[self.frame]
+				self.rect = self.image.get_rect()
+				self.rect.center = center
+
 METEOR_IMAGES = []
 METEOR_ROUTES = ["assets/meteorGrey_big1.png", "assets/meteorGrey_big2.png", "assets/meteorGrey_big3.png", "assets/meteorGrey_big4.png",
 				"assets/meteorGrey_med1.png", "assets/meteorGrey_med2.png", "assets/meteorGrey_small1.png", "assets/meteorGrey_small2.png",
@@ -105,6 +128,15 @@ METEOR_ROUTES = ["assets/meteorGrey_big1.png", "assets/meteorGrey_big2.png", "as
 
 for img in METEOR_ROUTES:
 	METEOR_IMAGES.append(pygame.image.load(img).convert())
+
+# ..................... Explosión Imagenes
+EXPLOSION_ANIM = []
+for i in range(9):
+	FILE = "assets/regularExplosion0{}.png".format(i)
+	IMG = pygame.image.load(FILE).convert()
+	IMG.set_colorkey(BLACK)
+	IMG_SCALE = pygame.transform.scale(IMG, (70, 70))
+	EXPLOSION_ANIM.append(IMG_SCALE)
 
 # Cargar Sonidos
 LASER_SOUND = pygame.mixer.Sound("assets/laser5.ogg")
@@ -150,6 +182,8 @@ while RUNNING:
 	HITS = pygame.sprite.groupcollide(METEOR_LIST, BULLETS, True, True)
 	for HIT in HITS:
 		SCORE += 10
+		EXPLOSION = Explosion(HIT.rect.center)
+		ALL_SPRITES.add(EXPLOSION)
 		# EXPLOSION_SOUND.play()
 		METEOR = Meteor()
 		ALL_SPRITES.add(METEOR)
