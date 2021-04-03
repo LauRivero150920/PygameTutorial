@@ -54,11 +54,11 @@ class Player(pygame.sprite.Sprite):
 class Meteor(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
-		self.image = pygame.image.load("assets/meteorGrey_med1.png").convert()
+		self.image = random.choice(METEOR_IMAGES)
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.x = random.randrange(WIDTH - self.rect.width)
-		self.rect.y = random.randrange(-100, -40)
+		self.rect.y = random.randrange(-140, -100)
 		self.speed_y = random.randrange(1, 10)
 		self.speed_x = random.randrange(-5, 5)
 
@@ -66,7 +66,7 @@ class Meteor(pygame.sprite.Sprite):
 		self.rect.y += self.speed_y
 		self.rect.x += self.speed_x
 
-		if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 25:
+		if self.rect.top > HEIGHT + 10 or self.rect.left < -40 or self.rect.right > WIDTH + 25:
 			self.rect.x = random.randrange(WIDTH - self.rect.width)
 			self.rect.y = random.randrange(-100, -40)
 			self.speed_y = random.randrange(1, 10)
@@ -85,6 +85,14 @@ class Bullet(pygame.sprite.Sprite):
 		self.rect.y += self.speedy
 		if self.rect.bottom < 0:
 			self.kill()
+
+METEOR_IMAGES = []
+METEOR_ROUTES = ["assets/meteorGrey_big1.png", "assets/meteorGrey_big2.png", "assets/meteorGrey_big3.png", "assets/meteorGrey_big4.png",
+				"assets/meteorGrey_med1.png", "assets/meteorGrey_med2.png", "assets/meteorGrey_small1.png", "assets/meteorGrey_small2.png",
+				"assets/meteorGrey_tiny1.png", "assets/meteorGrey_tiny2.png"]
+
+for img in METEOR_ROUTES:
+	METEOR_IMAGES.append(pygame.image.load(img).convert())
 
 # Cargar imagen de fondo
 BACK = pygame.image.load("assets/background.png").convert()
@@ -114,6 +122,7 @@ while RUNNING:
 				PLAYER.Shoot()
 
 	ALL_SPRITES.update()
+	
 	# Checar colisiones meteoro - laser
 	HITS = pygame.sprite.groupcollide(METEOR_LIST, BULLETS, True, True)
 	for HIT in HITS:
