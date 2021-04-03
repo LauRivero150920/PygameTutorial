@@ -39,9 +39,38 @@ class Player(pygame.sprite.Sprite):
 		if self.rect.left < 0:
 			self.rect.left = 0
 
+class Meteor(pygame.sprite.Sprite):
+	def __init__(self):
+		super().__init__()
+		self.image = pygame.image.load("assets/meteorGrey_med1.png").convert()
+		self.image.set_colorkey(BLACK)
+		self.rect = self.image.get_rect()
+		self.rect.x = random.randrange(WIDTH - self.rect.width)
+		self.rect.y = random.randrange(-100, -40)
+		self.speed_y = random.randrange(1, 10)
+		self.speed_x = random.randrange(-5, 5)
+
+	def update(self):
+		self.rect.y += self.speed_y
+		self.rect.x += self.speed_x
+
+		if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 25:
+			self.rect.x = random.randrange(WIDTH - self.rect.width)
+			self.rect.y = random.randrange(-100, -40)
+			self.speed_y = random.randrange(1, 10)
+
+# Cargar imagen de fondo
+BACK = pygame.image.load("assets/background.png").convert()
+
 ALL_SPRITES = pygame.sprite.Group()
+METEOR_LIST = pygame.sprite.Group()
 PLAYER = Player()
 ALL_SPRITES.add(PLAYER)
+
+for i in range(8):
+	METEOR = Meteor()
+	ALL_SPRITES.add(METEOR)
+	METEOR_LIST.add(METEOR)
 
 RUNNING = True
 
@@ -53,7 +82,7 @@ while RUNNING:
 
 	ALL_SPRITES.update()
 
-	WIN.fill(BLACK)
+	WIN.blit(BACK, [0,0])
 
 	ALL_SPRITES.draw(WIN)
 
