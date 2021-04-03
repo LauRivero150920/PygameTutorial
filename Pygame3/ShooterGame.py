@@ -39,6 +39,11 @@ class Player(pygame.sprite.Sprite):
 		if self.rect.left < 0:
 			self.rect.left = 0
 
+	def Shoot(self):
+		BULLET = Bullet(self.rect.centerx, self.rect.top)
+		ALL_SPRITES.add(BULLET)
+		BULLETS.add(BULLET)
+
 class Meteor(pygame.sprite.Sprite):
 	def __init__(self):
 		super().__init__()
@@ -59,11 +64,28 @@ class Meteor(pygame.sprite.Sprite):
 			self.rect.y = random.randrange(-100, -40)
 			self.speed_y = random.randrange(1, 10)
 
+class Bullet(pygame.sprite.Sprite):
+	def __init__(self, x, y):
+		super().__init__()
+		self.image = pygame.image.load("assets/laser1.png")
+		self.image.set_colorkey(BLACK)
+		self.rect = self.image.get_rect()
+		self.rect.y = y
+		self.rect.centerx = x
+		self.speedy = -10
+
+	def update(self):
+		self.rect.y += self.speedy
+		if self.rect.bottom < 0:
+			self.kill()
+
 # Cargar imagen de fondo
 BACK = pygame.image.load("assets/background.png").convert()
 
 ALL_SPRITES = pygame.sprite.Group()
 METEOR_LIST = pygame.sprite.Group()
+BULLETS = pygame.sprite.Group()
+
 PLAYER = Player()
 ALL_SPRITES.add(PLAYER)
 
@@ -79,8 +101,21 @@ while RUNNING:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			RUNNING = False
+		elif event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_SPACE:
+				PLAYER.Shoot()
 
 	ALL_SPRITES.update()
+	# Checar colisiones meteoro - laser
+	HITS = pygame.sprite.groupcollide(METEOR_LIST, BULLETS, True, True)
+	for HIT in HITS:
+		METEOR = Meteor()
+		ALL_SPRITES.add(METEOR)
+		METEOR_LIST.add(METEOR)
+	# Checar colisiones jugador - meteoro
+	HITS = pygame.sprite.spritecollide(PLAYER, METEOR_LIST, True)
+	if HITS:
+		RUNNING = False
 
 	WIN.blit(BACK, [0,0])
 
