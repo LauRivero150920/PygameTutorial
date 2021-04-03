@@ -18,7 +18,7 @@ CLOCK = pygame.time.Clock()
 
 def Draw_Text(surface, text, size, x, y):
 	FONT = pygame.font.SysFont("Berlin Sans FB", size)
-	text_surface = FONT.render("Score: " + text, True, WHITE)
+	text_surface = FONT.render(text, True, WHITE)
 	text_rect = text_surface.get_rect()
 	text_rect.midtop = (x ,y)
 	surface.blit(text_surface, text_rect)
@@ -121,6 +121,22 @@ class Explosion(pygame.sprite.Sprite):
 				self.rect = self.image.get_rect()
 				self.rect.center = center
 
+def Show_GO_Screen():
+	WIN.blit(BACK, [0, 0])
+	Draw_Text(WIN, "Space Shooter", 65, WIDTH // 2, HEIGHT // 4)
+	Draw_Text(WIN, "Start your adventure sapce pilot!", 27, WIDTH // 2, HEIGHT // 2)
+	Draw_Text(WIN, "Press Key to beign", 20, WIDTH // 2, HEIGHT *  3 / 4)
+	pygame.display.flip()
+	waiting = True
+	while waiting:
+		CLOCK.tick(60)
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+			if event.type == pygame.KEYUP:
+				waiting = False
+
+
 METEOR_IMAGES = []
 METEOR_ROUTES = ["assets/meteorGrey_big1.png", "assets/meteorGrey_big2.png", "assets/meteorGrey_big3.png", "assets/meteorGrey_big4.png",
 				"assets/meteorGrey_med1.png", "assets/meteorGrey_med2.png", "assets/meteorGrey_small1.png", "assets/meteorGrey_small2.png",
@@ -148,26 +164,35 @@ pygame.mixer.music.set_volume(0.2)
 # Cargar imagen de fondo
 BACK = pygame.image.load("assets/background.png").convert()
 
-ALL_SPRITES = pygame.sprite.Group()
-METEOR_LIST = pygame.sprite.Group()
-BULLETS = pygame.sprite.Group()
-
-PLAYER = Player()
-ALL_SPRITES.add(PLAYER)
-
-for i in range(8):
-	METEOR = Meteor()
-	ALL_SPRITES.add(METEOR)
-	METEOR_LIST.add(METEOR)
+# Game Over
+GAME_OVER = True
 
 RUNNING = True
-
-SCORE = 0
 
 # Repetir infinitamente (-1)
 #pygame.mixer.music.play(loops = -1)
 
 while RUNNING:
+
+	if GAME_OVER:
+
+		Show_GO_Screen()
+
+		GAME_OVER = False
+		ALL_SPRITES = pygame.sprite.Group()
+		METEOR_LIST = pygame.sprite.Group()
+		BULLETS = pygame.sprite.Group()
+
+		PLAYER = Player()
+		ALL_SPRITES.add(PLAYER)
+
+		for i in range(8):
+			METEOR = Meteor()
+			ALL_SPRITES.add(METEOR)
+			METEOR_LIST.add(METEOR)
+
+		SCORE = 0
+
 	CLOCK.tick(60)
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -197,15 +222,15 @@ while RUNNING:
 		ALL_SPRITES.add(METEOR)
 		METEOR_LIST.add(METEOR)
 		if(PLAYER.shield <= 0):
-			RUNNING = False
+			GAME_OVER = True
 
 	WIN.blit(BACK, [0,0])
 
 	ALL_SPRITES.draw(WIN)
 
 	# Marcador
-	Draw_Text(WIN, str(SCORE), 25, WIDTH // 2, 10)
-	Draw_Text(WIN, "Health: ", 20, 15, 10)
+	Draw_Text(WIN, "Score: " + str(SCORE), 25, WIDTH // 2, 10)
+	Draw_Text(WIN, "Health: ", 20, 40, 10)
 
 	# Barra de Salud
 	Draw_Shield_Bar(WIN, 10, 35, PLAYER.shield) 
