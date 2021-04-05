@@ -1,6 +1,6 @@
 from Shared import *
 
- class Ball(GameObject):
+class Ball(GameObject):
  	def __init__(self, position, sprite, game):
  		self.__game = game
  		self.__speed = 3

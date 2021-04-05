@@ -8,3 +8,7 @@ class GameConstants:
 	BALL_SIZE = [16,16]
 
 	PAD_SIZE = [139, 13]
+
+	# Colors
+	BLACK = (0, 0 , 0)
+	WHITE = (255, 255, 255)

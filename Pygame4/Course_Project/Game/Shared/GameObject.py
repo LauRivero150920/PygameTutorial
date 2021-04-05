@@ -1,5 +1,5 @@
 class GameObject:
-	def __init__(slef, position, size, sprite):
+	def __init__(self, position, size, sprite):
 		self.__position = position
 		self.__size = size
 		self.__sprite = sprite

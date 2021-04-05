@@ -6,7 +6,7 @@ class Level():
 		self.__currentLevel = 0
 
 	def getBricks(self):
-		retunr self.__bricks
+		return self.__bricks
 
 	def getAmountofBricks(self):
 		return self.__amountOfBricksLeft
