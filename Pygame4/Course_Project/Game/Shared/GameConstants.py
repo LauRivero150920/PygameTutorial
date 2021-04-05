@@ -1,3 +1,4 @@
+import os
 class GameConstants:
 	BRICK_SIZE = (100, 30)
 
@@ -12,3 +13,5 @@ class GameConstants:
 	# Colors
 	BLACK = (0, 0 , 0)
 	WHITE = (255, 255, 255)
+
+	SPRITE_BALL = os.path.join("Assets", "Ball.png")

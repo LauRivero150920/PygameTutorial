@@ -1,3 +1,4 @@
+import pygame
 from Shared import *
 
 class Ball(GameObject):
@@ -26,11 +27,11 @@ class Ball(GameObject):
  		self.__inMotion = isMoving
  		self.resetSpeed()
 
- 	def chamgeDirection(self, gameObject):
+ 	def changeDirection(self, gameObject):
  		pass
 
  	def updatePosition(self):
- 		pass
+ 		self.setPosition(pygame.mouse.get_pos())
 
  	def isBallDead(self):
  		pass
