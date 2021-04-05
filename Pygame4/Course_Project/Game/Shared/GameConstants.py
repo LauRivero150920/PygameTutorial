@@ -1,0 +1,6 @@
+class GameConstants:
+	BRICK_SIZE = (100, 30)
+	WIDTH = 800
+	HEIGHT = 600
+	SCREEN_SIZE = (WIDTH, HEIGHT)
+
