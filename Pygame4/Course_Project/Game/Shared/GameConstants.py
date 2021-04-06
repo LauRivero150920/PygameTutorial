@@ -1,6 +1,6 @@
 import os
 class GameConstants:
-	BRICK_SIZE = (100, 30)
+	BRICK_SIZE = (100, 40)
 
 	WIDTH = 800
 	HEIGHT = 600
@@ -15,3 +15,7 @@ class GameConstants:
 	WHITE = (255, 255, 255)
 
 	SPRITE_BALL = os.path.join("Assets", "Ball.png")
+
+	SPRITE_BRICK = os.path.join("Assets", "standard.png")
+	SPRITE_SPEEDBRICK = os.path.join("Assets", "speed.png")
+	SPRITE_LIFEBRICK = os.path.join("Assets", "life.png")

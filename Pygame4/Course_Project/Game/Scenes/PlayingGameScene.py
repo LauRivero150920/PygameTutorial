@@ -14,6 +14,8 @@ class PlayingGameScene(Scene):
 
 			game.WIN.blit(ball.getSprite(), ball.getPosition())
 
+		for brick in game.getLevel().getBricks():
+			game.WIN.blit(brick.getSprite(), brick.getPosition())
 	def handleEvents(self, events):
 		super(PlayingGameScene, self).handleEvents(events)
 
