@@ -16,5 +16,27 @@ class GameObject:
 	def getSprite(self):
 		return self.__sprite
 
-	def intersect(self, other):
-		pass
+	def __intersectsY(self, other):
+		otherPosition = other.getPosition()
+		otherSize = other.getSize()
+
+		if self.__position[1] >= otherPosition[1] and self.__position[1] <= (otherPosition[1] + otherSize[1]):
+			return 1
+		if (self.__position[1] + self.__size[1]) >= otherPosition[1] and self.__position[1] + self.__size[1] <= (otherPosition[1] + otherSize[1]):
+			return 1
+		return 0
+
+	def __intersectsX(self, other):
+		otherPosition = other.getPosition()
+		otherSize = other.getSize()
+
+		if self.__position[0] >= otherPosition[0] and self.__position[0] <= (otherPosition[0] + otherSize[0]):
+			return 1
+		if (self.__position[0] + self.__size[0]) > otherPosition[0] and (self.__position[0] + self.__size[0]) <= (otherPosition[0] + otherSize[0]):
+			return 1
+		return 0
+
+	def intersects(self, other):
+		if self.__intersectsX(other) and self.__intersectsY(other):
+			return 1
+		return 0
