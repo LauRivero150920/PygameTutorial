@@ -1,5 +1,7 @@
 import pygame
 from Scenes import Scene
+from Shared import *
+
 class PlayingGameScene(Scene):
 	def __init__(self, game):
 		super(PlayingGameScene, self).__init__(game)
@@ -8,6 +10,8 @@ class PlayingGameScene(Scene):
 		super(PlayingGameScene, self).render()
 
 		game = self.getGame()
+
+		pad = game.getPad()
 		
 		balls = game.getBalls()
 
@@ -19,8 +23,11 @@ class PlayingGameScene(Scene):
 			for brick in game.getLevel().getBricks():
 				if not brick.isDestroyed() and ball.intersects(brick):
 					brick.hit()
+					game.increaseScore(brick.getHitPoints())
 					ball.changeDirection(brick)
 					break
+			if ball.intersects(pad):
+				ball.changeDirection(pad)
 
 			ball.updatePosition()
 
@@ -29,6 +36,14 @@ class PlayingGameScene(Scene):
 		for brick in game.getLevel().getBricks():
 			if not brick.isDestroyed():
 				game.WIN.blit(brick.getSprite(), brick.getPosition())
+		
+		pad.setPosition((pygame.mouse.get_pos()[0], pad.getPosition()[1]))
+		game.WIN.blit(pad.getSprite(), pad.getPosition())
+		
+		self.clearText()
+
+		self.addText("Score: " + str(game.getScore()), x = 0, y = GameConstants.HEIGHT - 70, size = 30)
+		self.addText("Lives: " + str(game.getLives()), x = 0, y = GameConstants.HEIGHT - 40, size = 30)
 	
 	def handleEvents(self, events):
 		super(PlayingGameScene, self).handleEvents(events)
@@ -36,3 +51,6 @@ class PlayingGameScene(Scene):
 		for event in events:
 			if event.type == pygame.QUIT:
 				exit()
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				for ball in self.getGame().getBalls():
+					ball.setMotion(1)

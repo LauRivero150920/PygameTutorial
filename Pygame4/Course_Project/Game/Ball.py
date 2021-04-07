@@ -15,7 +15,7 @@ class Ball(GameObject):
 		self.__speed = newSpeed
 
 	def resetSpeed(self):
-		self.__setSpeed(3)
+		self.setSpeed(3)
 
 	def getSpeed(self):
 		return self.__speed
@@ -59,6 +59,10 @@ class Ball(GameObject):
 			self.__direction[1] *= -1
 
 	def updatePosition(self):
+		if not self.isInMotion():
+			padPosition = self.__game.getPad().getPosition()
+			self.setPosition((padPosition[0] + (GameConstants.PAD_SIZE[0] // 2), GameConstants.HEIGHT - GameConstants.PAD_SIZE[1] - GameConstants.BALL_SIZE[1]))
+			return 
 
 		position = self.getPosition()
 		size = self.getSize()

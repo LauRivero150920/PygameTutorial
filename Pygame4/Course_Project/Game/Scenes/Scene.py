@@ -1,10 +1,13 @@
+import pygame
+
 class Scene:
 	def __init__(self, game):
 		self.__game = game
-		self._texts = []
+		self.__texts = []
 
 	def render(self):
-		pass
+		for text in self.__texts:
+			self.__game.WIN.blit(text[0], text[1])
 
 	def getGame(self):
 		return self.__game
@@ -16,6 +19,7 @@ class Scene:
 		self.__texts = []
 
 	def addText(self, string, x = 0, y = 0, color = [255, 255, 255], background = [0, 0, 0], size = 20):
-		pass
+		font = pygame.font.Font(None, size)
+		self.__texts.append([font.render(string, True, color, background), (x, y)])
 		
 	
