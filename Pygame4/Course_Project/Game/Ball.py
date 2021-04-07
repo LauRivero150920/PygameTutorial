@@ -89,4 +89,10 @@ class Ball(GameObject):
 		self.setPosition(newPosition)
 
 	def isBallDead(self):
-		pass
+		position = self.getPosition()
+		size = self.getSize()
+
+		if position[1] + size[1] >= GameConstants.HEIGHT:
+			return 1
+
+		return 0

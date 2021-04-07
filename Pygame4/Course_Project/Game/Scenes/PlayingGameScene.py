@@ -11,6 +11,9 @@ class PlayingGameScene(Scene):
 
 		game = self.getGame()
 
+		if game.getLives() <= 0:
+			game.changeScene(GameConstants.GAMEOVER_SCENE)
+
 		pad = game.getPad()
 		
 		balls = game.getBalls()
@@ -30,6 +33,10 @@ class PlayingGameScene(Scene):
 				ball.changeDirection(pad)
 
 			ball.updatePosition()
+
+			if ball.isBallDead():
+				ball.setMotion(0)
+				game.reduceLives()
 
 			game.WIN.blit(ball.getSprite(), ball.getPosition())
 
