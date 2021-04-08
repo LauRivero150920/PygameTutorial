@@ -41,7 +41,7 @@ class Breakout:
 			MenuScene(self)
 		)
 
-		self.__currentScene = 0
+		self.__currentScene = 3
 
 		self.__sounds = (
 			pygame.mixer.Sound(GameConstants.SOUND_FILE_GAMEOVER),
