@@ -22,4 +22,4 @@ class Brick(GameObject):
 		self.__lives -= 1
 
 	def getHitSound(self):
-		pass
+		return GameConstants.SOUND_HIT_BRICK
