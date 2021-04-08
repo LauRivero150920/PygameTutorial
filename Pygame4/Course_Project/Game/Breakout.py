@@ -1,44 +1,44 @@
 import pygame
-from Assets import *
-from Bricks import *
-from Scenes import *
+from Ball import *
+from Highscore import *
 from Level import *
 from Pad import *
-from Ball import *
-from HighScore import *
+from Scenes import *
 from Shared import GameConstants
 
 class Breakout:
+
 	def __init__(self):
 		self.__lives = 5
 		self.__score = 0
 
 		self.__level = Level(self)
-		self.__level.load(0)
+		self.__level.loadRandom()
 
 		self.__pad = Pad((GameConstants.SCREEN_SIZE[0]/2,
 						 GameConstants.SCREEN_SIZE[1] - GameConstants.PAD_SIZE[1]),
 						 pygame.image.load(GameConstants.SPRITE_PAD)
-						 )		
+						 )
 		self.__balls = [
 			Ball((400, 400), pygame.image.load(GameConstants.SPRITE_BALL), self)
 		]
 
 		pygame.init()
 		pygame.mixer.init()
-		pygame.display.set_caption("Game Pew Pew")
+		pygame.display.set_caption("Game Programming with Python & PyGame")
 
-		self.__CLOCK = pygame.time.Clock()
+		self.__clock = pygame.time.Clock()
 
-		self.WIN = pygame.display.set_mode(GameConstants.SCREEN_SIZE, pygame.DOUBLEBUF, 32)
+		self.screen = pygame.display.set_mode(GameConstants.SCREEN_SIZE,
+											  pygame.DOUBLEBUF, 32)
 
 		pygame.mouse.set_visible(0)
 
 		self.__scenes = (
 			PlayingGameScene(self),
 			GameOverScene(self),
-			HighScoreScene(self),
-			MainMenuScene(self)
+			HighscoreScene(self),
+			MenuScene(self)
 		)
 
 		self.__currentScene = 0
@@ -46,10 +46,10 @@ class Breakout:
 		self.__sounds = ()
 
 	def start(self):
-		while True:
-			self.__CLOCK.tick(100)
+		while 1:
+			self.__clock.tick(100)
 
-			self.WIN.fill((GameConstants.BLACK))
+			self.screen.fill((0, 0, 0))
 
 			currentScene = self.__scenes[self.__currentScene]
 			currentScene.handleEvents(pygame.event.get())
@@ -89,7 +89,7 @@ class Breakout:
 
 	def increaseLives(self):
 		self.__lives += 1
-		
+
 	def reset(self):
 		self.__lives = 5
 		self.__score = 0

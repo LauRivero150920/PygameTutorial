@@ -1,5 +1,5 @@
 from Ball import Ball
-from HighScore import HighScore
+from Highscore import Highscore
 from Level import Level
 from Pad import Pad
 from Breakout import Breakout

@@ -2,6 +2,7 @@ import pygame
 from Shared import *
 
 class Ball(GameObject):
+
 	def __init__(self, position, sprite, game):
 		self.__game = game
 		self.__speed = 3
@@ -59,10 +60,14 @@ class Ball(GameObject):
 			self.__direction[1] *= -1
 
 	def updatePosition(self):
+
 		if not self.isInMotion():
 			padPosition = self.__game.getPad().getPosition()
-			self.setPosition((padPosition[0] + (GameConstants.PAD_SIZE[0] // 2), GameConstants.HEIGHT - GameConstants.PAD_SIZE[1] - GameConstants.BALL_SIZE[1]))
-			return 
+			self.setPosition((
+				padPosition[0] + (GameConstants.PAD_SIZE[0] / 2),
+				GameConstants.SCREEN_SIZE[1] - GameConstants.PAD_SIZE[1] - GameConstants.BALL_SIZE[1]
+			))
+			return
 
 		position = self.getPosition()
 		size = self.getSize()
@@ -92,7 +97,7 @@ class Ball(GameObject):
 		position = self.getPosition()
 		size = self.getSize()
 
-		if position[1] + size[1] >= GameConstants.HEIGHT:
+		if position[1] + size[1] >= GameConstants.SCREEN_SIZE[1]:
 			return 1
 
 		return 0
