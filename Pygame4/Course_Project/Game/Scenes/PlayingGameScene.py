@@ -1,7 +1,7 @@
 import pygame
 from Scenes.Scene import Scene
 from Shared import *
-
+from Level import *
 class PlayingGameScene(Scene):
 
 	def __init__(self, game):
@@ -12,12 +12,22 @@ class PlayingGameScene(Scene):
 
 		game = self.getGame()
 
+		level = game.getLevel()
+
+		balls = game.getBalls()
+
+		if level.getAmountOfBricksLeft() <= 0:
+			for ball in balls:
+				ball.setMotion(0)
+
+			level.loadNextLevel()
+			
 		if game.getLives() <= 0:
 			game.playSound(GameConstants.SOUND_GAMEOVER)
 			game.changeScene(GameConstants.GAMEOVER_SCENE)
 
 		pad = game.getPad()
-		balls = game.getBalls()
+		
 		for ball in balls:
 			for ball2 in balls:
 				if ball != ball2 and ball.intersects(ball2):
@@ -27,6 +37,7 @@ class PlayingGameScene(Scene):
 				if not brick.isDestroyed() and ball.intersects(brick):
 					game.playSound(brick.getHitSound())
 					brick.hit()
+					level.brickHit()
 					game.increaseScore(brick.getHitPoints())
 					ball.changeDirection(brick)
 					break
